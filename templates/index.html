@@ -12,12 +12,36 @@
     <a href="/" class="brand">kiyasla<span>.com</span></a>
 
     <nav class="nav-links">
-        <a href="#features">Neden kıyasla?</a>
-        <a href="#analysis-form">Analiz</a>
+    <a href="#features">Neden kıyasla?</a>
+    <a href="#analysis-form">Analiz</a>
+</nav>
+{% if session.get("user_id") %}
 
-    </nav>
+    <div class="account-menu">
+        <button class="account-button" type="button">
+            <span class="account-icon">👤</span>
+            <span>Hesabım</span>
+        </button>
 
-    <a href="#analysis-form" class="nav-cta">Kıyasla</a>
+        <div class="account-dropdown">
+            <div class="account-email">
+                {{ session.get("email") }}
+            </div>
+
+            <a href="/history">Geçmiş Analizlerim</a>
+            <a href="/favorites">Favorilerim</a>
+            <a href="/logout" class="logout-link">Çıkış Yap</a>
+        </div>
+    </div>
+
+{% else %}
+
+    <button type="button" class="nav-cta auth-open-btn" id="openAuthModal">
+        Giriş Yap
+    </button>
+
+{% endif %}
+
 </header>
 
 <main class="home">
@@ -227,6 +251,14 @@
                         <a href="{{ listing.listing_url }}" target="_blank">
                             İlanı Gör
                         </a>
+                        {% if session.get("user_id") %}
+    <form method="POST" action="/favorite/add" style="margin-top: 10px;">
+        <input type="hidden" name="listing_url" value="{{ listing.listing_url }}">
+        <button type="submit" class="favorite-btn">
+            ♡ Favorilere Ekle
+        </button>
+    </form>
+{% endif %}
                     </div>
                 </div>
             {% endfor %}
@@ -280,8 +312,100 @@
 
 </main>
 
+<div class="auth-modal hidden" id="authModal">
+    <div class="auth-modal-backdrop" id="closeAuthModal"></div>
+
+    <div class="auth-card">
+        <button class="auth-close" type="button" id="authCloseButton">×</button>
+
+        <div class="auth-header">
+            <span class="auth-badge">kiyasla.com</span>
+            <h2>Hesabına giriş yap</h2>
+            <p>Analiz geçmişini sakla, favori ilanlarını daha sonra tekrar incele.</p>
+        </div>
+
+        <div class="auth-tabs">
+            <button type="button" class="auth-tab active" data-auth-tab="login">
+                Giriş Yap
+            </button>
+            <button type="button" class="auth-tab" data-auth-tab="register">
+                Kayıt Ol
+            </button>
+        </div>
+
+        <form class="auth-form active" id="loginForm" method="POST" action="/login">
+            <div class="form-field">
+                <label>E-posta</label>
+                <input type="email" name="email" placeholder="ornek@mail.com" required>
+            </div>
+
+            <div class="form-field">
+                <label>Şifre</label>
+                <input type="password" name="password" placeholder="Şifren" required>
+            </div>
+
+            <button type="submit">Giriş Yap</button>
+        </form>
+
+        <form class="auth-form" id="registerForm" method="POST" action="/register">
+            <div class="form-field">
+                <label>E-posta</label>
+                <input type="email" name="email" placeholder="ornek@mail.com" required>
+            </div>
+
+            <div class="form-field">
+                <label>Şifre</label>
+                <input type="password" name="password" placeholder="Yeni şifre" required>
+            </div>
+
+            <button type="submit">Kayıt Ol</button>
+        </form>
+    </div>
+</div>
+
 <script>
     const districtSelect = document.getElementById("district");
+    const authModal = document.getElementById("authModal");
+const openAuthModal = document.getElementById("openAuthModal");
+const closeAuthModal = document.getElementById("closeAuthModal");
+const authCloseButton = document.getElementById("authCloseButton");
+const authTabs = document.querySelectorAll(".auth-tab");
+const authForms = document.querySelectorAll(".auth-form");
+
+if (openAuthModal) {
+    openAuthModal.addEventListener("click", function () {
+        authModal.classList.remove("hidden");
+    });
+}
+
+if (closeAuthModal) {
+    closeAuthModal.addEventListener("click", function () {
+        authModal.classList.add("hidden");
+    });
+}
+
+if (authCloseButton) {
+    authCloseButton.addEventListener("click", function () {
+        authModal.classList.add("hidden");
+    });
+}
+
+authTabs.forEach(function (tab) {
+    tab.addEventListener("click", function () {
+        const target = tab.dataset.authTab;
+
+        authTabs.forEach(item => item.classList.remove("active"));
+        authForms.forEach(form => form.classList.remove("active"));
+
+        tab.classList.add("active");
+
+        if (target === "login") {
+            document.getElementById("loginForm").classList.add("active");
+        } else {
+            document.getElementById("registerForm").classList.add("active");
+        }
+    });
+}); 
     const neighborhoodSelect = document.getElementById("neighborhood");
     const analysisForm = document.getElementById("analysisForm");
     const loadingBox = document.getElementById("loadingBox");

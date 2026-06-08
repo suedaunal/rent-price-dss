@@ -1,5 +1,8 @@
 # src/config.py
+import os
+from dotenv import load_dotenv
 
+load_dotenv()
 # ---------------------------------------------------------
 # GENEL PROJE AYARLARI
 # ---------------------------------------------------------
@@ -82,7 +85,7 @@ DEFAULT_ALTERNATIVE_LIMIT = 5
 DB_CONFIG = {
     "dbname": "fair_rent_db",
     "user": "postgres",
-    "password": "123456",
+    "password": "12345",
     "host": "localhost",
     "port": 5432,
 }
