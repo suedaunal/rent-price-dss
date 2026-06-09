@@ -83,9 +83,9 @@ DEFAULT_ALTERNATIVE_LIMIT = 5
 # ---------------------------------------------------------
 
 DB_CONFIG = {
-    "dbname": "fair_rent_db",
-    "user": "postgres",
-    "password": "12345",
-    "host": "localhost",
-    "port": 5432,
+    "dbname": os.getenv("DB_NAME"),
+    "user": os.getenv("DB_USER"),
+    "password": os.getenv("DB_PASSWORD"),
+    "host": os.getenv("DB_HOST"),
+    "port": int(os.getenv("DB_PORT")),
 }
