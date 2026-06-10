@@ -1,5 +1,5 @@
 # app.py
-
+import os
 from flask import (Flask,render_template,request,jsonify,redirect,session,url_for)
 
 from werkzeug.security import (generate_password_hash,check_password_hash)
@@ -32,7 +32,10 @@ DISTRICT_LABELS = {
 }
 
 app = Flask(__name__)
-app.secret_key = "dev-secret-key"
+app.secret_key = os.getenv(
+    "SECRET_KEY",
+    "dev-secret-key"
+)
 # ---------------------------------------------------------
 # KAYIT OL
 # Yeni kullanıcı oluşturur.
