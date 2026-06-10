@@ -1572,3 +1572,43 @@ button {
         grid-template-columns: 1fr;
     }
 }
+@media (max-width: 768px) {
+
+    .hero {
+        display: flex !important;
+        flex-direction: column !important;
+    }
+
+    .hero-process {
+        width: 100% !important;
+        padding: 18px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        min-height: auto !important;
+        gap: 14px !important;
+    }
+
+    .process-cards {
+        width: 100% !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 14px !important;
+    }
+
+    .process-card {
+        width: 100% !important;
+        display: grid !important;
+        grid-template-columns: 52px 1fr !important;
+        padding: 16px !important;
+        box-sizing: border-box !important;
+    }
+
+    .process-note {
+        width: 100% !important;
+        grid-column: auto !important;
+        margin-top: 4px !important;
+        text-align: center !important;
+        font-size: 14px !important;
+        line-height: 1.4 !important;
+    }
+}
