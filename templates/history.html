@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <title>Geçmiş Analizlerim</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<header class="navbar">
+    <a href="/" class="brand">kıyasla<span>.com</span></a>
+
+    <nav class="nav-links">
+        <a href="/">Ana Sayfa</a>
+        <a href="/#analysis-form">Yeni Analiz</a>
+    </nav>
+
+    <a href="/logout" class="nav-cta">Çıkış Yap</a>
+</header>
+
+<main class="home">
+
+    <section class="search-section">
+        <div class="section-heading page-heading">
+            <div>
+                <a href="/" class="back-button">← Ana Sayfaya Dön</a>
+                <h2>Geçmiş Analizlerim</h2>
+                <p>Daha önce yaptığın kira analizlerini burada görebilirsin.</p>
+            </div>
+
+            <a href="/#analysis-form" class="section-cta">Yeni Analiz</a>
+        </div>
+
+        {% if history %}
+
+            <div class="property-grid">
+                {% for item in history %}
+                    <div class="property-card">
+                        <div class="property-body">
+                            <h4>{{ item.district|title }} / {{ item.neighborhood }}</h4>
+
+                            <strong>{{ item.rent_price }} TL</strong>
+
+                            <p>{{ item.room_count }} • {{ item.net_m2 }} m²</p>
+
+                            <p>Adil Kira Skoru: {{ item.fair_rent_score }}%</p>
+
+                            <p>Durum: {{ item.status }}</p>
+
+                            <small>{{ item.created_at }}</small>
+                            <a
+                                class="history-reopen-btn"
+                                href="/?district={{ item.district | urlencode }}&neighborhood={{ item.neighborhood | urlencode }}&room_count={{ item.room_count | urlencode }}&rent_price={{ item.rent_price }}&net_m2={{ item.net_m2 }}#analysis-form"
+                            >
+                                Analizi Yeniden Aç
+                            </a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+        {% else %}
+
+            <div class="empty-state">
+                <h3>Henüz kayıtlı analiz bulunmuyor.</h3>
+                <p>İlk kira analizini yaptığında sonuçların burada listelenecek.</p>
+                <a href="/#analysis-form">İlk Analizini Yap</a>
+            </div>
+
+        {% endif %}
+    </section>
+
+</main>
+
+</body>
+</html>

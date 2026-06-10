@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Analiz Sonucu</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <div class="page-container">
+
+        <div class="card result-card">
+
+            <h1>Analiz Sonucu</h1>
+
+            <div class="result-summary">
+                <h2>{{ result.status }}</h2>
+
+                <p>
+                    Adil Kira Puanı:
+                    <strong>{{ result.fair_rent_score }} / 100</strong>
+                </p>
+
+                <div class="score-bar">
+                    <div class="score-fill" style="width: {{ result.fair_rent_score }}%;"></div>
+                </div>
+            </div>
+
+            <div class="info-grid">
+                <div>
+                    <span>Girilen İlçe</span>
+                    <strong>{{ user_input.district_label }}</strong>
+                </div>
+                <div>
+                    <span>Mahalle</span>
+                    <strong>
+                        {% if user_input.neighborhood %}
+                            {{ user_input.neighborhood }}
+                        {% else %}
+                            Belirtilmedi
+                        {% endif %}
+                    </strong>
+                </div>
+
+                <div>
+                    <span>Oda Sayısı</span>
+                    <strong>{{ user_input.room_count }}</strong>
+                </div>
+
+                <div>
+                    <span>Girilen Kira</span>
+                    <strong>{{ user_input.rent_price }} TL</strong>
+                </div>
+
+                <div>
+                    <span>Net m²</span>
+                    <strong>{{ user_input.net_m2 }} m²</strong>
+                </div>
+
+                <div>
+                    <span>Bölge Ortalama Kirası</span>
+                    <strong>{{ result.average_rent }} TL</strong>
+                </div>
+
+                <div>
+                    <span>Bölge m² Kira Ortalaması</span>
+                    <strong>{{ result.average_price_per_m2 }} TL/m²</strong>
+                </div>
+
+                <div>
+                    <span>Girilen m² Kira</span>
+                    <strong>{{ result.user_price_per_m2 }} TL/m²</strong>
+                </div>
+
+                <div>
+                    <span>Fiyat Oranı</span>
+                    <strong>{{ result.relative_price_ratio }}</strong>
+                </div>
+            </div>
+
+            <div class="comment-box">
+                {% if result.status == "Yüksek" %}
+                    Bu kira, benzer ilanların ortalamasına göre yüksek görünüyor.
+                {% elif result.status == "Düşük" %}
+                    Bu kira, benzer ilanların ortalamasına göre düşük görünüyor.
+                {% elif result.status == "Makul" %}
+                    Bu kira, benzer ilanların ortalamasına yakın ve makul görünüyor.
+                {% else %}
+                    Bu kriterler için yeterli karşılaştırma verisi bulunamadı.
+                {% endif %}
+            </div>
+
+        </div>
+
+        <div class="card alternatives-card">
+            <h2>Alternatif İlanlar</h2>
+
+            {% if result.alternatives %}
+
+                <div class="listing-grid">
+                    {% for listing in result.alternatives %}
+                        <div class="listing-card">
+                            <h3>{{ listing.title }}</h3>
+
+                            <p>
+                                {{ user_input.district_label }} |
+                                {{ listing.room_count }} |
+                                {{ listing.net_m2 }} m²
+                            </p>
+
+                            <p class="price">
+                                {{ listing.price }} TL
+                            </p>
+
+                            <p>
+                                Adil Kira Puanı:
+                                <strong>{{ listing.fair_rent_score }} / 100</strong>
+                            </p>
+
+                            <a href="{{ listing.listing_url }}" target="_blank" class="listing-button">
+                                İlana Git
+                            </a>
+                        </div>
+                    {% endfor %}
+                </div>
+
+            {% else %}
+                <p class="empty-message">
+                    Bu kriterlere göre daha uygun fiyatlı alternatif ilan bulunamadı.
+                </p>
+            {% endif %}
+        </div>
+
+        <div class="back-link">
+            <a href="/">Yeni Analiz Yap</a>
+        </div>
+
+    </div>
+
+</body>
+</html>

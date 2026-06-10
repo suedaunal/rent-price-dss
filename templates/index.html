@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <title>kıyasla.com | Kiranı Kıyasla</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<header class="navbar">
+    <a href="/" class="brand">kıyasla<span>.com</span></a>
+
+    <nav class="nav-links">
+    <a href="#features">Neden kıyasla?</a>
+    <a href="#analysis-form">Analiz</a>
+</nav>
+{% if session.get("user_id") %}
+
+    <div class="account-menu">
+        <button class="account-button" type="button">
+            <span class="account-icon">👤</span>
+            <span>Hesabım</span>
+        </button>
+
+        <div class="account-dropdown">
+            <div class="account-email">
+                {{ session.get("email") }}
+            </div>
+
+            <a href="/history">Geçmiş Analizlerim</a>
+            <a href="/favorites">Favorilerim</a>
+            <a href="/logout" class="logout-link">Çıkış Yap</a>
+        </div>
+    </div>
+
+{% else %}
+
+    <button type="button" class="nav-cta auth-open-btn" id="openAuthModal">
+        Giriş Yap
+    </button>
+
+{% endif %}
+
+</header>
+
+<main class="home">
+
+    <section class="hero">
+        <div class="hero-content">
+            <div class="badge">Gerçek ilan verileriyle</div>
+
+            <h1>Kiranı benzer evlerle kıyasla.</h1>
+
+            <p>
+                Bölgendeki benzer ilanlara göre kiranın uygun olup olmadığını birkaç adımda öğren.
+            </p>
+
+            <div class="hero-actions">
+                <a href="#analysis-form" class="hero-cta">Hemen Kıyasla <span>→</span></a>
+                <a href="#features" class="hero-secondary">Nasıl çalışır? <span>→</span></a>
+            </div>
+
+            <div class="hero-points">
+                <span>📊​ Ücretsiz analiz</span>
+                <span>⚡​ Hızlı sonuç</span>
+            </div>
+        </div>
+
+        <div class="hero-process">
+            <div class="process-line">
+                <span>1</span>
+                <span>2</span>
+                <span>3</span>
+            </div>
+
+            <div class="process-cards">
+                <div class="process-card">
+                    <div class="process-icon">⌂</div>
+                    <div>
+                        <h3>Ev bilgilerini gir</h3>
+                        <p>Konum, m², oda sayısı ve kira bilgisi</p>
+                    </div>
+                </div>
+
+                <div class="process-card">
+                    <div class="process-icon">≋</div>
+                    <div>
+                        <h3>Benzer ilanlarla karşılaştır</h3>
+                        <p>Güncel bölge verilerine göre analiz</p>
+                    </div>
+                </div>
+
+                <div class="process-card">
+                    <div class="process-icon">▥</div>
+                    <div>
+                        <h3>Sonucu anında gör</h3>
+                        <p>Kiran uygun mu, yüksek mi, öğren</p>
+                    </div>
+                </div>
+            </div>
+
+            <p class="process-note">
+                Karşılaştırma; konum, metrekare ve ilan benzerliğine göre yapılır.
+            </p>
+        </div>
+    </section>
+
+    <section class="stats-row">
+        <div>
+            <strong data-count="90">0</strong>
+            <span>aktif ilan</span>
+        </div>
+
+        <div>
+            <strong data-count="15">0</strong>
+            <span>mahalle</span>
+        </div>
+
+        <div>
+            <strong data-count="3">0</strong>
+            <span>ilçe</span>
+        </div>
+
+        <div>
+            <strong data-count="100">0</strong>
+            <span>veri odaklı</span>
+        </div>
+    </section>
+
+    <section id="features" class="trust-section">
+    <div class="section-heading">
+        <h2>Neden kıyasla.com?</h2>
+        <p>Daha net karar, daha güçlü karşılaştırma.</p>
+    </div>
+
+    <div class="trust-grid">
+        <div class="trust-item">
+            <span>📍</span>
+            <h3>Mahalle bazlı bakış</h3>
+            <p>Aynı ilçedeki farklı mahalleleri tek potada değerlendirmez.</p>
+        </div>
+
+        <div class="trust-item">
+            <span>📊</span>
+            <h3>Gerçek ilan verisi</h3>
+            <p>Analiz, toplanan güncel kiralık ilan verileriyle desteklenir.</p>
+        </div>
+
+        <div class="trust-item">
+            <span>🏠</span>
+            <h3>Alternatifleri gösterir</h3>
+            <p>Benzer özelliklerde daha uygun ilanları keşfetmeni sağlar.</p>
+        </div>
+    </div>
+</section>
+
+
+    <section id="analysis-form" class="search-section">
+        <div class="section-heading">
+            <h2>Kira Analizi</h2>
+            <p>Bilgileri gir. Sonucu aynı ekranda gör.</p>
+        </div>
+
+        <form id="analysisForm" class="search-form">
+
+            <div class="form-field">
+                <label for="district">İlçe</label>
+                <select id="district" name="district" required>
+                    <option value="">Seçiniz</option>
+                    <option value="kadikoy">Kadıköy</option>
+                    <option value="uskudar">Üsküdar</option>
+                    <option value="besiktas">Beşiktaş</option>
+                    <option value="sisli">Şişli</option>
+                    <option value="bakirkoy">Bakırköy</option>
+                    <option value="maltepe">Maltepe</option>
+                    <option value="atasehir">Ataşehir</option>
+                    <option value="sariyer">Sarıyer</option>
+
+                </select>
+            </div>
+
+            <div class="form-field">
+                <label for="neighborhood">Mahalle</label>
+                <select id="neighborhood" name="neighborhood">
+                    <option value="">Önce ilçe seçiniz</option>
+                </select>
+            </div>
+
+            <div class="form-field">
+                <label for="room_count">Oda</label>
+                <select id="room_count" name="room_count" required>
+                    <option value="">Seçiniz</option>
+                    <option value="1+1">1+1</option>
+                    <option value="2+1">2+1</option>
+                    <option value="3+1">3+1</option>
+                    <option value="4+1">4+1</option>
+                </select>
+            </div>
+
+            <div class="form-field">
+                <label for="rent_price">Kira</label>
+                <input type="number" id="rent_price" name="rent_price" placeholder="90000" min="1" required>
+            </div>
+
+            <div class="form-field">
+                <label for="net_m2">Net m²</label>
+                <input type="number" id="net_m2" name="net_m2" placeholder="90" min="1" required>
+            </div>
+
+            <button type="submit">Kıyasla</button>
+        </form>
+
+        <div id="loadingBox" class="loading-box hidden">
+            <div class="loader"></div>
+            <span>Kira değeri analiz ediliyor...</span>
+        </div>
+
+        <div id="inlineResult" class="inline-result hidden"></div>
+    </section>
+    <section class="source-section">
+        <div>
+            <h2>Analizler güncel ilan verileriyle oluşturulur.</h2>
+
+            <p>
+
+                Kira karşılaştırmaları piyasadaki gerçek ilanlar kullanılarak hesaplanır.
+                
+            </p>
+        </div>
+
+        <div class="source-logo">
+            <img
+                src="{{ url_for('static', filename='images/emlakjet-logo.png') }}"
+                alt="Emlakjet"
+            >
+        </div>
+    </section>
+
+    <section class="recent-section">
+        <div class="section-heading">
+            <h2>Son Eklenen İlanlar</h2>
+            <p>Piyasadaki güncel örnekleri keşfet.</p>
+        </div>
+
+        <div class="recent-grid">
+            {% for listing in recent_listings %}
+                <div class="recent-card">
+                    <div class="card-image-area">
+                        {% if listing.image_url %}
+                            <img src="{{ listing.image_url }}" alt="İlan fotoğrafı" class="recent-image">
+                        {% else %}
+                            <div class="recent-image placeholder">Ev</div>
+                        {% endif %}
+
+                        {% if session.get("user_id") %}
+                            <button
+                                type="button"
+                                class="heart-button js-favorite-heart {% if listing.listing_url in (favorite_urls | default([])) %}active{% endif %}"
+                                data-listing-url="{{ listing.listing_url }}"
+                                aria-label="Favorilere ekle"
+                            >
+                                {% if listing.listing_url in (favorite_urls | default([])) %}♥{% else %}♡{% endif %}
+                            </button>
+                        {% else %}
+                            <button type="button" class="heart-button auth-trigger" aria-label="Giriş yaparak favorilere ekle">♡</button>
+                        {% endif %}
+                    </div>
+
+                    <div class="recent-content">
+                        <span>{{ listing.neighborhood }} / {{ listing.district }}</span>
+                        <h3>{{ listing.title }}</h3>
+
+                        <div class="recent-meta">
+                            {{ listing.room_count }} • {{ listing.net_m2 }} m²
+                        </div>
+
+                        <strong>{{ listing.price }} TL</strong>
+
+                        <a href="{{ listing.listing_url }}" target="_blank">
+                            İlanı Gör
+                        </a>
+
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section class="popular-section">
+        <div class="section-heading">
+            <h2>Popüler Aramalar</h2>
+        </div>
+
+        <div class="popular-grid">
+            <span>Kadıköy kiralık daire</span>
+            <span>Üsküdar 2+1 kiralık</span>
+            <span>Beşiktaş kiralık ev</span>
+            <span>Suadiye kiralık daire</span>
+            <span>Acıbadem 2+1 kiralık</span>
+            <span>Bostancı kiralık ev</span>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="footer-brand">
+            <h2>kıyasla<span>.com</span></h2>
+            <p>
+                Gerçek ilan verileriyle kira değerini analiz et,
+                alternatifleri keşfet.
+            </p>
+
+            <div class="footer-badge">
+                • Veri odaklı kira analizi
+            </div>
+        </div>
+
+        <div class="footer-links">
+            <div>
+                <h4>Ürün</h4>
+                <a href="#analysis-form">Kira Analizi</a>
+                <a href="#features">Neden kıyasla?</a>
+                <a href="#analysis-form">Alternatif İlanlar</a>
+                <a href="/history">Analiz Geçmişi</a>
+            </div>
+
+            <div>
+                <h4>Veri Kaynakları</h4>
+                <a href="#">Emlakjet İlanları</a>
+                <a href="#">Mahalle Bazlı Veriler</a>
+                <a href="#">m² Fiyat Analizi</a>
+                <a href="#">Güncel Piyasa Verisi</a>
+            </div>
+
+            <div>
+                <h4>Hesap</h4>
+                <a href="/favorites">Favorilerim</a>
+                <a href="/history">Geçmiş Analizlerim</a>
+                <a href="#analysis-form">Yeni Analiz Yap</a>
+                <a href="/logout">Çıkış Yap</a>
+            </div>
+
+            <div>
+                <h4>kıyasla.com</h4>
+                <a href="#">Hakkımızda</a>
+                <a href="#">İletişim</a>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <span>© 2026 kıyasla.com</span>
+            <span>Bu sistem karar destek amacıyla geliştirilmiştir.</span>
+        </div>
+    </footer>
+
+
+
+</main>
+
+        <div class="auth-modal hidden" id="authModal">
+            <div class="auth-modal-backdrop" id="closeAuthModal"></div>
+
+            <div class="auth-card auth-card-wide">
+                <button class="auth-close" type="button" id="authCloseButton">×</button>
+
+                <div class="auth-left">
+                    <div class="auth-logo">kıyasla<span>.com</span></div>
+
+                    <h2>Kira kararını daha bilinçli ver.</h2>
+
+                    <p>
+                        Hesabınla analiz geçmişini sakla, favori ilanlarını kaydet
+                        ve alternatifleri daha sonra tekrar incele.
+                    </p>
+
+                    <ul class="auth-benefits">
+                        <li>Analiz geçmişini görüntüle</li>
+                        <li>Favori ilanlarını kaydet</li>
+                        <li>Daha sonra tekrar karşılaştır</li>
+                    </ul>
+                </div>
+
+                <div class="auth-right">
+                    <div class="auth-header">
+                        <span class="auth-badge" id="authBadge">Tekrar hoş geldin</span>
+                        <h2 id="authTitle">Hesabına giriş yap</h2>
+                        <p id="authDescription">
+                            Analiz geçmişine ve favori ilanlarına eriş.
+                        </p>
+                    </div>
+
+                    <div class="auth-tabs">
+                        <button type="button" class="auth-tab active" data-auth-tab="login">
+                            Giriş Yap
+                        </button>
+
+                        <button type="button" class="auth-tab" data-auth-tab="register">
+                            Kayıt Ol
+                        </button>
+                    </div>
+
+                    <form class="auth-form active" id="loginForm" method="POST" action="/login">
+                        <div class="form-field">
+                            <label>E-posta</label>
+                            <input type="email" name="email" placeholder="ornek@mail.com" required>
+                        </div>
+
+                        <div class="form-field">
+                            <label>Şifre</label>
+                            <input type="password" name="password" placeholder="Şifren" required>
+                        </div>
+
+                        <button type="submit">Giriş Yap</button>
+                    </form>
+
+                    <form class="auth-form" id="registerForm" method="POST" action="/register">
+                        <div class="form-field">
+                            <label>E-posta</label>
+                            <input type="email" name="email" placeholder="ornek@mail.com" required>
+                        </div>
+
+                        <div class="form-field">
+                            <label>Şifre</label>
+                            <input type="password" name="password" placeholder="Yeni şifre" required>
+                        </div>
+                        <div class="form-field">
+                            <label>Şifre Tekrar</label>
+                            <input type="password" name="confirm_password" placeholder="Şifreni tekrar gir" required>
+                        </div>
+
+
+                        <button type="submit">Kayıt Ol</button>
+                    </form>
+
+                    <p class="auth-policy">
+                        Devam ederek kıyasla.com kullanım koşullarını ve veri kullanım notlarını kabul etmiş olursun.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+<script id="page-data" type="application/json">
+{
+    "favoriteUrls": {{ favorite_urls | default([]) | tojson }},
+    "isLoggedIn": {{ "true" if session.get("user_id") else "false" }}
+}
+</script>
+
+<script>
+    const pageData = JSON.parse(document.getElementById("page-data").textContent);
+    const favoriteUrls = pageData.favoriteUrls;
+    const isLoggedIn = pageData.isLoggedIn;
+
+    const districtSelect = document.getElementById("district");
+    const authModal = document.getElementById("authModal");
+    const openAuthModal = document.getElementById("openAuthModal");
+    const closeAuthModal = document.getElementById("closeAuthModal");
+    const authCloseButton = document.getElementById("authCloseButton");
+    const authTabs = document.querySelectorAll(".auth-tab");
+    const authForms = document.querySelectorAll(".auth-form");
+
+if (openAuthModal) {
+    openAuthModal.addEventListener("click", function () {
+        authModal.classList.remove("hidden");
+    });
+}
+
+if (closeAuthModal) {
+    closeAuthModal.addEventListener("click", function () {
+        authModal.classList.add("hidden");
+    });
+}
+
+if (authCloseButton) {
+    authCloseButton.addEventListener("click", function () {
+        authModal.classList.add("hidden");
+    });
+}
+
+const authBadge = document.getElementById("authBadge");
+const authTitle = document.getElementById("authTitle");
+const authDescription = document.getElementById("authDescription");
+
+authTabs.forEach(function (tab) {
+    tab.addEventListener("click", function () {
+        const target = tab.dataset.authTab;
+
+        authTabs.forEach(item => item.classList.remove("active"));
+        authForms.forEach(form => form.classList.remove("active"));
+
+        tab.classList.add("active");
+
+        if (target === "login") {
+            document.getElementById("loginForm").classList.add("active");
+
+            authBadge.textContent = "Tekrar hoş geldin";
+            authTitle.textContent = "Hesabına giriş yap";
+            authDescription.textContent = "Analiz geçmişine ve favori ilanlarına eriş.";
+        } else {
+            document.getElementById("registerForm").classList.add("active");
+
+            authBadge.textContent = "Ücretsiz hesap";
+            authTitle.textContent = "kıyasla.com’a katıl";
+            authDescription.textContent = "Analizlerini sakla, favori ilanlarını kaydet ve daha sonra tekrar incele.";
+        }
+    });
+});
+    const neighborhoodSelect = document.getElementById("neighborhood");
+    const analysisForm = document.getElementById("analysisForm");
+    const loadingBox = document.getElementById("loadingBox");
+    const inlineResult = document.getElementById("inlineResult");
+
+    const urlParams = new URLSearchParams(window.location.search);
+
+    async function prefillAnalysisFromUrl() {
+        const district = urlParams.get("district");
+        const neighborhood = urlParams.get("neighborhood");
+        const roomCount = urlParams.get("room_count");
+        const rentPrice = urlParams.get("rent_price");
+        const netM2 = urlParams.get("net_m2");
+
+        if (!district) {
+            return;
+        }
+
+        districtSelect.value = district;
+
+        neighborhoodSelect.innerHTML = '<option value="">Yükleniyor...</option>';
+
+        const response = await fetch(`/neighborhoods/${district}`);
+        const neighborhoods = await response.json();
+
+        neighborhoodSelect.innerHTML = '<option value="">Mahalle seçiniz</option>';
+
+        neighborhoods.forEach(function (item) {
+            const option = document.createElement("option");
+            option.value = item;
+            option.textContent = item;
+            neighborhoodSelect.appendChild(option);
+        });
+
+        if (neighborhood) {
+            neighborhoodSelect.value = neighborhood;
+        }
+
+        if (roomCount) {
+            document.getElementById("room_count").value = roomCount;
+        }
+
+        if (rentPrice) {
+            document.getElementById("rent_price").value = rentPrice;
+        }
+
+        if (netM2) {
+            document.getElementById("net_m2").value = netM2;
+        }
+    }
+
+    prefillAnalysisFromUrl();
+
+    districtSelect.addEventListener("change", async function () {
+        const district = this.value;
+        neighborhoodSelect.innerHTML = '<option value="">Yükleniyor...</option>';
+
+        if (!district) {
+            neighborhoodSelect.innerHTML = '<option value="">Önce ilçe seçiniz</option>';
+            return;
+        }
+
+        const response = await fetch(`/neighborhoods/${district}`);
+        const neighborhoods = await response.json();
+
+        neighborhoodSelect.innerHTML = '<option value="">Mahalle seçiniz</option>';
+
+        neighborhoods.forEach(function (neighborhood) {
+            const option = document.createElement("option");
+            option.value = neighborhood;
+            option.textContent = neighborhood;
+            neighborhoodSelect.appendChild(option);
+        });
+    });
+
+    function animateCount(element, target, suffix = "") {
+        let current = 0;
+        const step = Math.ceil(target / 40);
+
+        const timer = setInterval(() => {
+            current += step;
+
+            if (current >= target) {
+                current = target;
+                clearInterval(timer);
+            }
+
+            element.textContent = current + suffix;
+        }, 24);
+    }
+
+    document.querySelectorAll("[data-count]").forEach((item) => {
+        const target = parseInt(item.dataset.count);
+        const suffix = target === 100 ? "%" : "+";
+        animateCount(item, target, suffix);
+    });
+
+    const scoreCounter = document.getElementById("scoreCounter");
+
+    if (scoreCounter) {
+        animateCount(scoreCounter, 94);
+    }
+
+    analysisForm.addEventListener("submit", async function (event) {
+        event.preventDefault();
+
+        inlineResult.classList.add("hidden");
+        loadingBox.classList.remove("hidden");
+
+        const payload = {
+            district: districtSelect.value,
+            neighborhood: neighborhoodSelect.value,
+            room_count: document.getElementById("room_count").value,
+            rent_price: document.getElementById("rent_price").value,
+            net_m2: document.getElementById("net_m2").value,
+        };
+
+        try {
+            const response = await fetch("/api/analyze", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(payload),
+            });
+
+            if (!response.ok) {
+                throw new Error("Analiz isteği başarısız oldu.");
+            }
+
+            const result = await response.json();
+
+            setTimeout(() => {
+                loadingBox.classList.add("hidden");
+                renderResult(result);
+                inlineResult.classList.remove("hidden");
+                inlineResult.scrollIntoView({ behavior: "smooth", block: "start" });
+            }, 700);
+
+        } catch (error) {
+            loadingBox.classList.add("hidden");
+            inlineResult.innerHTML = `
+                <div class="empty-message">
+                    Analiz sırasında bir hata oluştu. Lütfen bilgileri kontrol edip tekrar deneyin.
+                </div>
+            `;
+            inlineResult.classList.remove("hidden");
+            console.error(error);
+        }
+       
+
+    });
+
+    function renderResult(result) {
+        const ratio = Number(result.relative_price_ratio);
+        const diffPercent = Math.round(Math.abs((ratio - 1) * 100));
+
+        const statusConfig =
+            result.status === "Yüksek"
+                ? {
+                    className: "risk-high",
+                    title: "Yüksek Fiyat",
+                    subtitle: `Girdiğiniz kira, benzer ilanların ortalamasına göre %${diffPercent} daha yüksektir.`,
+                    circleText: "Ortalamanın Üzerinde",
+                    icon: "↗",
+                    infoTitle: `Girdiğiniz kira, benzer ilanların ortalamasına göre %${diffPercent} daha yüksektir.`,
+                    infoText: "Piyasa koşullarına göre fiyatınız yüksek seviyededir."
+                }
+                : result.status === "Düşük"
+                ? {
+                    className: "risk-low",
+                    title: "Düşük Fiyat",
+                    subtitle: `Girdiğiniz kira, benzer ilanların ortalamasına göre %${diffPercent} daha düşüktür.`,
+                    circleText: "Ortalamanın Altında",
+                    icon: "↘",
+                    infoTitle: `Girdiğiniz kira, benzer ilanların ortalamasına göre %${diffPercent} daha düşüktür.`,
+                    infoText: "Bu fiyat, benzer ilanlara göre avantajlı görünüyor."
+                }
+                : {
+                    className: "risk-good",
+                    title: "Makul Fiyat",
+                    subtitle: "Girdiğiniz kira, seçilen bölgedeki benzer ilanlarla uyumlu görünüyor.",
+                    circleText: "Piyasaya Yakın",
+                    icon: "✓",
+                    infoTitle: "Girdiğiniz kira, benzer ilanların ortalamasına yakındır.",
+                    infoText: "Piyasa koşullarına göre fiyatınız makul seviyededir."
+                };
+
+        const alternativesHtml = result.alternatives.length
+            ? result.alternatives.map(item => {
+                const pricePerM2 = Math.round(Number(item.price) / Number(item.net_m2));
+                const isFavorite = favoriteUrls.includes(item.listing_url);
+
+                return `
+                    <div class="property-card">
+                        <div class="property-image-wrap">
+                            ${
+                                item.image_url
+                                ? `<img src="${item.image_url}" alt="İlan fotoğrafı" class="property-image">`
+                                : `<div class="property-image placeholder">Ev</div>`
+                            }
+
+                            <button 
+                                type="button"
+                                class="heart-button ${isFavorite ? "active" : ""} ${isLoggedIn ? "js-favorite-heart" : "auth-trigger"}"
+                                data-listing-url="${item.listing_url}"
+                                aria-label="Favorilere ekle"
+                            >
+                                ${isFavorite ? "♥" : "♡"}
+                            </button>
+
+                            <span class="price-badge">${pricePerM2.toLocaleString("tr-TR")} TL/m²</span>
+                            <span class="property-badge">${item.room_count} | ${item.net_m2} m²</span>
+                        </div>
+                        <div class="property-body">
+                            <h4>${item.title}</h4>
+                            <strong>${Number(item.price).toLocaleString("tr-TR")} TL</strong>
+                            <a href="${item.listing_url}" target="_blank">İlana Git</a>
+                        </div>
+                    </div>
+                `;
+            }).join("")
+            : `<p class="empty-message">Bu kriterlerde daha uygun alternatif bulunamadı.</p>`;
+
+        inlineResult.innerHTML = `
+            <div class="result-showcase ${statusConfig.className}">
+                <div class="result-icon">${statusConfig.icon}</div>
+
+                <div class="result-main-text">
+                    <span>Kira Değerlendirmesi</span>
+                    <h3>${statusConfig.title}</h3>
+                    <p>${statusConfig.subtitle}</p>
+                </div>
+
+                <div class="result-percent-circle">
+                    <strong>${result.fair_rent_score}%</strong>
+                    <span>${statusConfig.circleText}</span>
+                </div>
+            </div>
+
+            <div class="result-metrics premium">
+                <div>
+                    <span>📍 Bölge Ortalaması</span>
+                    <strong>${Number(result.average_rent).toLocaleString("tr-TR")} TL</strong>
+                </div>
+
+                <div>
+                    <span>🏠 m² Ortalama</span>
+                    <strong>${Number(result.average_price_per_m2).toLocaleString("tr-TR")} TL</strong>
+                </div>
+
+                <div>
+                    <span>💳 Senin m² Kiran</span>
+                    <strong>${Number(result.user_price_per_m2).toLocaleString("tr-TR")} TL</strong>
+                </div>
+
+                <div>
+                    <span>% Fiyat Oranı</span>
+                    <strong>${String(result.relative_price_ratio).replace(".", ",")}</strong>
+                    <small>Ortalamanın ${String(result.relative_price_ratio).replace(".", ",")} katı</small>
+                </div>
+            </div>
+
+            <div class="result-note">
+                <div class="note-icon">i</div>
+                <div>
+                    <strong>${statusConfig.infoTitle}</strong>
+                    <p>${statusConfig.infoText}</p>
+                </div>
+            </div>
+
+                        <div class="inline-alternatives">
+                            <h3>Alternatifleri İncele</h3>
+                            <div class="property-grid">
+                                ${alternativesHtml}
+                            </div>
+                        </div>
+                    `;
+                }
+
+                async function toggleFavoriteFromButton(button) {
+                    const listingUrl = button.dataset.listingUrl;
+
+                    if (!listingUrl) {
+                        return;
+                    }
+
+                    if (!isLoggedIn) {
+                        authModal.classList.remove("hidden");
+                        return;
+                    }
+
+                    const response = await fetch("/favorite/toggle", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                            listing_url: listingUrl,
+                        }),
+                    });
+
+                    if (response.status === 401) {
+                        authModal.classList.remove("hidden");
+                        return;
+                    }
+
+                    const data = await response.json();
+
+                    if (data.is_favorite) {
+                        button.textContent = "♥";
+                        button.classList.add("active");
+
+                        if (!favoriteUrls.includes(listingUrl)) {
+                            favoriteUrls.push(listingUrl);
+                        }
+                    } else {
+                        button.textContent = "♡";
+                        button.classList.remove("active");
+
+                        const index = favoriteUrls.indexOf(listingUrl);
+                        if (index > -1) {
+                            favoriteUrls.splice(index, 1);
+                        }
+                    }
+                }
+
+                document.addEventListener("click", function (event) {
+                    const authHeart = event.target.closest(".auth-trigger");
+
+                    if (authHeart) {
+                        authModal.classList.remove("hidden");
+                        return;
+                    }
+
+                    const favoriteHeart = event.target.closest(".js-favorite-heart");
+
+                    if (favoriteHeart) {
+                        toggleFavoriteFromButton(favoriteHeart);
+                    }
+                });
+</script>
+
+</body>
+</html>
