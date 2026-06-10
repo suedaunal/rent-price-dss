@@ -269,3 +269,44 @@ def get_user_favorites(user_id):
 
     with get_connection() as conn:
         return pd.read_sql(query, conn, params=(user_id,))
+
+
+#---------------------------------#
+def get_user_favorite_urls(user_id):
+    query = """
+    SELECT listing_url
+    FROM favorites
+    WHERE user_id = %s;
+    """
+
+    with get_connection() as conn:
+        df = pd.read_sql(query, conn, params=(user_id,))
+
+    return df["listing_url"].tolist()
+
+
+def remove_favorite(user_id, listing_url):
+    query = """
+    DELETE FROM favorites
+    WHERE user_id = %s
+      AND listing_url = %s;
+    """
+
+    with get_connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute(query, (user_id, listing_url))
+
+
+def is_favorite(user_id, listing_url):
+    query = """
+    SELECT 1
+    FROM favorites
+    WHERE user_id = %s
+      AND listing_url = %s
+    LIMIT 1;
+    """
+
+    with get_connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute(query, (user_id, listing_url))
+            return cur.fetchone() is not None
