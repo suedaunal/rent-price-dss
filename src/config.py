@@ -13,6 +13,11 @@ DISTRICTS = [
     "kadikoy",
     "uskudar",
     "besiktas",
+    "sisli",
+    "bakirkoy",
+    "maltepe",
+    "atasehir",
+    "sariyer",
 ]
 
 
