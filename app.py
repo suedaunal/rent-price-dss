@@ -12,7 +12,10 @@ from src.database import (
     save_analysis,
     get_user_analysis_history,
     add_favorite,
-    get_user_favorites
+    get_user_favorites,
+    get_user_favorite_urls,
+    remove_favorite,
+    is_favorite
 )
 
 from src.analysis import (clean_listings,enrich_listings,analyze_user_input)
@@ -21,6 +24,11 @@ DISTRICT_LABELS = {
     "kadikoy": "Kadıköy",
     "uskudar": "Üsküdar",
     "besiktas": "Beşiktaş",
+    "sisli": "Şişli",
+    "bakirkoy": "Bakırköy",
+    "maltepe": "Maltepe",
+    "atasehir": "Ataşehir",
+    "sariyer": "Sarıyer",
 }
 
 app = Flask(__name__)
@@ -39,9 +47,14 @@ def register():
 
     email = request.form.get("email")
     password = request.form.get("password")
+    confirm_password = request.form.get("confirm_password")
+
 
     if not email or not password:
         return "E-posta ve şifre zorunludur."
+
+    if password != confirm_password:
+        return "Şifreler eşleşmiyor."
 
     password_hash = generate_password_hash(password)
 
@@ -146,6 +159,36 @@ def favorite_add():
 
     return redirect(request.referrer or url_for("index"))
 
+@app.route("/favorite/toggle", methods=["POST"])
+def favorite_toggle():
+
+    if not session.get("user_id"):
+        return jsonify({
+            "success": False,
+            "requires_login": True
+        }), 401
+
+    data = request.get_json()
+    listing_url = data.get("listing_url")
+
+    if not listing_url:
+        return jsonify({
+            "success": False,
+            "message": "listing_url eksik"
+        }), 400
+
+    if is_favorite(session["user_id"], listing_url):
+        remove_favorite(session["user_id"], listing_url)
+        return jsonify({
+            "success": True,
+            "is_favorite": False
+        })
+
+    add_favorite(session["user_id"], listing_url)
+    return jsonify({
+        "success": True,
+        "is_favorite": True
+    })
 
 # ---------------------------------------------------------
 # FAVORİLERİM
@@ -180,9 +223,15 @@ def index():
     recent_df = fetch_recent_listings(limit=6)
     recent_listings = recent_df.to_dict(orient="records")
 
+    favorite_urls = []
+
+    if session.get("user_id"):
+        favorite_urls = get_user_favorite_urls(session["user_id"])
+
     return render_template(
         "index.html",
         recent_listings=recent_listings,
+        favorite_urls=favorite_urls,
     )
 
 #-----------------
@@ -307,3 +356,7 @@ if __name__ == "__main__":
 
 
 print(app.url_map)
+
+#---------------------------------------
+#Yardımcı Fonk
+#--------------------------------------
