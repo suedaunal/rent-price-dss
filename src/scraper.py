@@ -166,6 +166,7 @@ def parse_listing_detail(url: str, district: str) -> dict:
         COL_DATE_COLLECTED: datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         **title_data,
         **detail_data,
+
 }
 
 
