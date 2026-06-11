@@ -310,3 +310,23 @@ def is_favorite(user_id, listing_url):
         with conn.cursor() as cur:
             cur.execute(query, (user_id, listing_url))
             return cur.fetchone() is not None
+
+def get_home_stats():
+    query = """
+    SELECT
+        COUNT(*) AS listing_count,
+        COUNT(DISTINCT district) AS district_count,
+        COUNT(DISTINCT neighborhood) AS neighborhood_count
+    FROM listings;
+    """
+
+    with get_connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute(query)
+            row = cur.fetchone()
+
+    return {
+        "listing_count": row[0],
+        "district_count": row[1],
+        "neighborhood_count": row[2],
+    }
