@@ -1,5 +1,5 @@
 # app.py
-import os
+
 from flask import (Flask,render_template,request,jsonify,redirect,session,url_for)
 
 from werkzeug.security import (generate_password_hash,check_password_hash)
@@ -15,7 +15,8 @@ from src.database import (
     get_user_favorites,
     get_user_favorite_urls,
     remove_favorite,
-    is_favorite
+    is_favorite,
+    get_home_stats
 )
 
 from src.analysis import (clean_listings,enrich_listings,analyze_user_input)
@@ -32,10 +33,7 @@ DISTRICT_LABELS = {
 }
 
 app = Flask(__name__)
-app.secret_key = os.getenv(
-    "SECRET_KEY",
-    "dev-secret-key"
-)
+app.secret_key = "dev-secret-key"
 # ---------------------------------------------------------
 # KAYIT OL
 # Yeni kullanıcı oluşturur.
@@ -126,7 +124,7 @@ def logout():
 def history():
 
     if not session.get("user_id"):
-        return redirect(url_for("login"))
+        return redirect("/?auth=login")
 
     history_df = get_user_analysis_history(
         session["user_id"]
@@ -200,9 +198,8 @@ def favorite_toggle():
 
 @app.route("/favorites")
 def favorites():
-
     if not session.get("user_id"):
-        return redirect(url_for("login"))
+        return redirect("/?auth=login")
 
     favorites_df = get_user_favorites(
         session["user_id"]
@@ -225,6 +222,7 @@ def favorites():
 def index():
     recent_df = fetch_recent_listings(limit=6)
     recent_listings = recent_df.to_dict(orient="records")
+    stats = get_home_stats()
 
     favorite_urls = []
 
@@ -235,6 +233,7 @@ def index():
         "index.html",
         recent_listings=recent_listings,
         favorite_urls=favorite_urls,
+        stats=stats,
     )
 
 #-----------------
@@ -345,6 +344,14 @@ def api_analyze():
 
     return jsonify(result)
 
+@app.route("/about")
+def about():
+    return render_template("about.html")
+
+
+@app.route("/contact")
+def contact():
+    return render_template("contact.html")
 
 
 
