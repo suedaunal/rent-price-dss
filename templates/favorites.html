@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Favorilerim | kıyasla.com</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}?v=2">
+</head>
+
+<body>
+
+<header class="navbar">
+    <a href="/" class="brand">kıyasla<span>.com</span></a>
+
+    <nav class="nav-links">
+        <a href="/">Neden kıyasla.com?</a>
+        <a href="/history">Analiz</a>
+    </nav>
+
+    <a href="/logout" class="nav-cta">Çıkış Yap</a>
+</header>
+
+<main class="home">
+
+    <section class="favorites-page">
+        <div class="favorites-hero">
+            <div>
+                <a href="/" class="back-button">← Ana Sayfaya Dön</a>
+
+                <h1>Favorilerim</h1>
+
+                <p>
+                    Kaydettiğin ilanları burada tekrar inceleyebilir,
+                    ilgini çeken seçenekleri daha sonra karşılaştırabilirsin.
+                </p>
+            </div>
+
+            <div class="favorites-visual">                
+            </div>
+        </div>
+
+        <div class="favorites-top-action">
+            <a href="/#analysis-form" class="section-cta">＋ Yeni Analiz Yap</a>
+        </div>
+
+        {% if favorites %}
+
+            <div class="favorites-grid recent-grid">
+                {% for listing in favorites %}
+                    <article class="recent-card favorite-list-card">
+                        <div class="card-image-area">
+                            {% if listing.image_url %}
+                                <img src="{{ listing.image_url }}" alt="İlan fotoğrafı" class="recent-image">
+                            {% else %}
+                                <div class="recent-image placeholder">Ev</div>
+                            {% endif %}
+
+                            <button
+                                type="button"
+                                class="heart-button favorite-remove-heart active"
+                                data-listing-url="{{ listing.listing_url }}"
+                                aria-label="Favoriden çıkar"
+                            >
+                                ♥
+                            </button>
+                        </div>
+
+                        <div class="recent-content">
+                            <span>{{ listing.neighborhood }} / {{ listing.district|title }}</span>
+
+                            <h3>{{ listing.title }}</h3>
+
+                            <div class="recent-meta">
+                                {{ listing.room_count }} • {{ listing.net_m2 }} m²
+                            </div>
+
+                            <strong>{{ listing.price }} TL</strong>
+
+                            <a href="{{ listing.listing_url }}" target="_blank">
+                                İlanı Gör
+                            </a>
+                        </div>
+                    </article>
+                {% endfor %}
+            </div>
+
+        {% else %}
+
+            <div class="favorites-empty">
+                <div class="favorites-empty-icon">♡</div>
+                <h3>Henüz favori ilan eklemedin.</h3>
+                <p>
+                    Kira analizi yaptıktan sonra beğendiğin ilanları favorilerine
+                    ekleyebilir ve daha sonra tekrar inceleyebilirsin.
+                </p>
+                <a href="/#analysis-form">Kira Analizi Yap</a>
+            </div>
+
+        {% endif %}
+    </section>
+
+    <footer class="footer">
+        <div class="footer-brand">
+            <h2>kıyasla<span>.com</span></h2>
+            <p>
+                Gerçek ilan verileriyle kira değerini analiz et,
+                alternatifleri keşfet.
+            </p>
+
+            <div class="footer-badge">
+                • Veri odaklı kira analizi
+            </div>
+        </div>
+
+        <div class="footer-links">
+            <div>
+                <h4>Ürün</h4>
+                <a href="#analysis-form">Kira Analizi</a>
+                <a href="#features">Neden kıyasla.com?</a>
+                <a href="#analysis-form">Alternatif İlanlar</a>
+                <a href="/history">Analiz Geçmişi</a>
+            </div>
+
+            <div>
+                <h4>Veri Kaynakları</h4>
+                <span>Emlakjet İlanları</span>
+                <span>Mahalle Bazlı Veriler</span>
+                <span>m² Fiyat Analizi</span>
+                <span>Güncel Piyasa Verisi</span>
+            </div>
+
+            <div>
+                <h4>Hesap</h4>
+                {% if session.get("user_id") %}
+                    <a href="/favorites">Favorilerim</a>
+                {% else %}
+                    <a href="/?auth=login">Favorilerim</a>
+                {% endif %}
+                {% if session.get("user_id") %}
+                    <a href="/history">Geçmiş Analizlerim</a>
+                {% else %}
+                    <a href="/?auth=login">Geçmiş Analizlerim</a>
+                {% endif %}
+                
+                <a href="#analysis-form">Yeni Analiz Yap</a>
+                <a href="/logout">Çıkış Yap</a>
+            </div>
+
+            <div>
+                <h4>kıyasla.com</h4>
+                <a href="/about">Hakkımızda</a>
+                <a href="/contact">İletişim</a>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <span>© 2026 kıyasla.com</span>
+            <span>Bu sistem karar destek amacıyla geliştirilmiştir.</span>
+        </div>
+    </footer>
+
+</main>
+
+<script>
+    document.addEventListener("click", async function (event) {
+        const button = event.target.closest(".favorite-remove-heart");
+
+        if (!button) {
+            return;
+        }
+
+        const card = button.closest(".favorite-list-card");
+        const grid = document.querySelector(".favorites-grid");
+        const listingUrl = button.dataset.listingUrl;
+
+        const response = await fetch("/favorite/toggle", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                listing_url: listingUrl,
+            }),
+        });
+
+        if (!response.ok) {
+            return;
+        }
+
+        const data = await response.json();
+
+        if (data.is_favorite === false && card) {
+            card.remove();
+        }
+
+        if (grid && grid.children.length === 0) {
+            grid.outerHTML = `
+                <div class="favorites-empty">
+                    <div class="favorites-empty-icon">♡</div>
+                    <h3>Favori listen henüz boş.</h3>
+                    <p>
+                        İlgini çeken ilanları favorilerine ekleyerek daha sonra hızlıca
+                        karşılaştırabilirsin.
+                    </p>
+                    <a href="/#analysis-form">İlanları Keşfet</a>
+                </div>
+            `;
+        }
+    });
+</script>
+
+</body>
+</html>

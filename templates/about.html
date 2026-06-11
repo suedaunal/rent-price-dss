@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Hakkımızda | kiyasla.com</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}?v=2">
+</head>
+
+<body>
+<header class="navbar">
+    <a href="/" class="brand">kıyasla<span>.com</span></a>
+
+    <nav class="nav-links">
+        <a href="/#features">Neden kıyasla.com?</a>
+        <a href="/#analysis-form">Analiz</a>
+    </nav>
+
+    {% if session.get("user_id") %}
+
+    <div class="account-menu">
+        <button class="account-button" type="button">
+            <span class="account-icon">👤</span>
+            <span>Hesabım</span>
+        </button>
+
+        <div class="account-dropdown">
+            <div class="account-email">
+                {{ session.get("email") }}
+            </div>
+
+            <a href="/history">Geçmiş Analizlerim</a>
+            <a href="/favorites">Favorilerim</a>
+            <a href="/logout" class="logout-link">Çıkış Yap</a>
+        </div>
+    </div>
+
+    {% else %}
+
+    <a href="/?auth=login" class="nav-cta">
+        Giriş Yap
+    </a>
+
+    {% endif %}
+</header>
+
+<main class="home">
+
+    <section class="about-hero">
+        <div>
+            <a href="/" class="back-button">← Ana Sayfaya Dön</a>
+            <h1>Hakkımızda</h1>
+            <p>
+                kıyasla.com, veriye dayalı analizlerle kira kararlarını
+                daha doğru, anlaşılır ve güvenilir hale getirir.
+            </p>
+        </div>
+
+            <div class="visual-building">🏢</div>
+        </div>
+    </section>
+
+    <section class="about-grid">
+        <article class="about-card large">
+            <div class="about-icon blue">👥</div>
+            <div>
+                <h2>Biz Kimiz?</h2>
+                <p>
+                    kıyasla.com, İstanbul'daki kiralık konut piyasasını daha
+                    şeffaf hale getirmek amacıyla geliştirilmiş bir kira analiz
+                    ve karşılaştırma platformudur.
+                </p>
+                <p>
+                    Kullanıcılar, ilgilendikleri konutun kira bedelini bölgedeki
+                    benzer ilanlarla karşılaştırabilir, fiyatın makul olup olmadığını
+                    görebilir ve alternatif ilanları tek ekranda inceleyebilir.
+                </p>
+            </div>
+        </article>
+
+        <article class="about-card large highlighted">
+            <div class="about-icon blue">📈</div>
+            <div>
+                <h2>Neden kıyasla.com?</h2>
+                <p>
+                    Kiralık konut fiyatları mahalle, metrekare, oda sayısı ve piyasa
+                    koşullarına göre büyük farklılıklar gösterebilir.
+                </p>
+
+                <ul class="about-checklist">
+                    <li>Bölgesel kira analizleri sunar</li>
+                    <li>Gerçek ilan verileriyle çalışır</li>
+                    <li>Benzer ilanları karşılaştırır</li>
+                    <li>Veri destekli karar alma imkanı sağlar</li>
+                </ul>
+            </div>
+        </article>
+
+        <article class="about-card compact">
+            <div class="about-icon green">🗄️</div>
+            <div>
+                <h2>Veri Kaynağı</h2>
+                <p>
+                    Platformda kullanılan ilan verileri kamuya açık emlak ilanlarından
+                    elde edilir ve düzenli olarak güncellenir.
+                </p>
+            </div>
+        </article>
+
+        <article class="about-card compact">
+            <div class="about-icon purple">🎯</div>
+            <div>
+                <h2>Vizyonumuz</h2>
+                <p>
+                    Konut kiralama sürecini daha şeffaf, anlaşılır ve veri odaklı
+                    hale getirmek.
+                </p>
+            </div>
+        </article>
+    </section>
+
+    <section class="about-banner">
+        <div class="about-banner-icon">🛡️</div>
+        <strong>Amacımız daha şeffaf bir kira piyasası ve daha bilinçli kararlar.</strong>
+        <span>kıyasla.com ile doğru bilgi, doğru karar.</span>
+    </section>
+
+    <footer class="footer">
+        <div class="footer-brand">
+            <h2>kıyasla<span>.com</span></h2>
+            <p>
+                Gerçek ilan verileriyle kira değerini analiz et,
+                alternatifleri keşfet.
+            </p>
+
+            <div class="footer-badge">
+                • Veri odaklı kira analizi
+            </div>
+        </div>
+
+        <div class="footer-links">
+            <div>
+                <h4>Ürün</h4>
+                <a href="#analysis-form">Kira Analizi</a>
+                <a href="#features">Neden kıyasla.com?</a>
+                <a href="#analysis-form">Alternatif İlanlar</a>
+                <a href="/history">Analiz Geçmişi</a>
+            </div>
+
+            <div>
+                <h4>Veri Kaynakları</h4>
+                <span>Emlakjet İlanları</span>
+                <span>Mahalle Bazlı Veriler</span>
+                <span>m² Fiyat Analizi</span>
+                <span>Güncel Piyasa Verisi</span>
+            </div>
+
+            <div>
+                <h4>Hesap</h4>
+                {% if session.get("user_id") %}
+                    <a href="/favorites">Favorilerim</a>
+                {% else %}
+                    <a href="/?auth=login">Favorilerim</a>
+                {% endif %}
+                {% if session.get("user_id") %}
+                    <a href="/history">Geçmiş Analizlerim</a>
+                {% else %}
+                    <a href="/?auth=login">Geçmiş Analizlerim</a>
+                {% endif %}
+                
+                <a href="#analysis-form">Yeni Analiz Yap</a>
+                <a href="/logout">Çıkış Yap</a>
+            </div>
+
+            <div>
+                <h4>kıyasla.com</h4>
+                <a href="/about">Hakkımızda</a>
+                <a href="/contact">İletişim</a>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <span>© 2026 kıyasla.com</span>
+            <span>Bu sistem karar destek amacıyla geliştirilmiştir.</span>
+        </div>
+    </footer>
+
+</main>
+
+</body>
+</html>

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Geçmiş Analizlerim | kıyasla.com</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}?v=2">
+</head>
+
+<body>
+
+<header class="navbar">
+    <a href="/" class="brand">kıyasla<span>.com</span></a>
+
+    <nav class="nav-links">
+        <a href="/">Neden kıyasla.com?</a>
+        <a href="/#analysis-form">Analiz</a>
+    </nav>
+
+    <a href="/logout" class="nav-cta">Çıkış Yap</a>
+</header>
+
+<main class="home">
+
+    <section class="history-page">
+        <div class="history-hero">
+            <div>
+                <a href="/" class="back-button">← Ana Sayfaya Dön</a>
+
+                <h1>Geçmiş Analizlerim</h1>
+
+                <p>
+                    Daha önce yaptığın kira analizlerini burada görebilir,
+                    aynı bilgilerle analizi yeniden açabilirsin.
+                </p>
+            </div>
+
+        </div>
+
+        <div class="history-top-action">
+            <a href="/#analysis-form" class="section-cta">＋ Yeni Analiz</a>
+        </div>
+
+        {% if history %}
+
+            <div class="history-grid">
+                {% for item in history %}
+                    <article class="history-card">
+                        <div class="history-card-header">
+                            <div class="history-location-icon">📍</div>
+
+                            <h3>
+                                {{ item.district|title }} / {{ item.neighborhood }}
+                            </h3>
+
+                            <span class="history-status-badge 
+                                {% if item.status == 'Makul' %}status-good
+                                {% elif item.status == 'Yüksek' or item.status == 'Biraz Yüksek' %}status-high
+                                {% else %}status-low
+                                {% endif %}
+                            ">
+                                {% if item.status == 'Makul' %}✓
+                                {% elif item.status == 'Yüksek' or item.status == 'Biraz Yüksek' %}↗
+                                {% else %}↘
+                                {% endif %}
+                            </span>
+                        </div>
+
+                        <strong class="history-price">
+                            {{ item.rent_price }} TL
+                        </strong>
+
+                        <div class="history-divider"></div>
+
+                        <div class="history-details">
+                            <p>▣ {{ item.room_count }} • {{ item.net_m2 }} m²</p>
+                            <p>☆ Adil Kira Skoru: {{ item.fair_rent_score }}%</p>
+                            <p>▥ Durum: {{ item.status }}</p>
+                            <p>▣ {{ item.created_at }}</p>
+                        </div>
+
+                        <a
+                            class="history-reopen-btn"
+                            href="/?district={{ item.district | urlencode }}&neighborhood={{ item.neighborhood | urlencode }}&room_count={{ item.room_count | urlencode }}&rent_price={{ item.rent_price }}&net_m2={{ item.net_m2 }}#analysis-form"
+                        >
+                            Analizi Yeniden Aç
+                        </a>
+                    </article>
+                {% endfor %}
+            </div>
+
+        {% else %}
+
+            <div class="empty-state">
+                <div class="empty-icon">📊</div>
+                <h3>Henüz kayıtlı analiz bulunmuyor.</h3>
+                <p>İlk kira analizini yaptığında sonuçların burada listelenecek.</p>
+                <a href="/#analysis-form">İlk Analizini Yap</a>
+            </div>
+
+        {% endif %}
+    </section>
+
+    <footer class="footer">
+        <div class="footer-brand">
+            <h2>kıyasla<span>.com</span></h2>
+            <p>
+                Gerçek ilan verileriyle kira değerini analiz et,
+                alternatifleri keşfet.
+            </p>
+
+            <div class="footer-badge">
+                • Veri odaklı kira analizi
+            </div>
+        </div>
+
+        <div class="footer-links">
+            <div>
+                <h4>Ürün</h4>
+                <a href="#analysis-form">Kira Analizi</a>
+                <a href="#features">Neden kıyasla.com?</a>
+                <a href="#analysis-form">Alternatif İlanlar</a>
+                <a href="/history">Analiz Geçmişi</a>
+            </div>
+
+            <div>
+                <h4>Veri Kaynakları</h4>
+                <span>Emlakjet İlanları</span>
+                <span>Mahalle Bazlı Veriler</span>
+                <span>m² Fiyat Analizi</span>
+                <span>Güncel Piyasa Verisi</span>
+            </div>
+
+            <div>
+                <h4>Hesap</h4>
+                {% if session.get("user_id") %}
+                    <a href="/favorites">Favorilerim</a>
+                {% else %}
+                    <a href="/?auth=login">Favorilerim</a>
+                {% endif %}
+                {% if session.get("user_id") %}
+                    <a href="/history">Geçmiş Analizlerim</a>
+                {% else %}
+                    <a href="/?auth=login">Geçmiş Analizlerim</a>
+                {% endif %}
+                
+                <a href="#analysis-form">Yeni Analiz Yap</a>
+                <a href="/logout">Çıkış Yap</a>
+            </div>
+
+            <div>
+                <h4>kıyasla.com</h4>
+                <a href="/about">Hakkımızda</a>
+                <a href="/contact">İletişim</a>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <span>© 2026 kıyasla.com</span>
+            <span>Bu sistem karar destek amacıyla geliştirilmiştir.</span>
+        </div>
+    </footer>
+
+</main>
+
+</body>
+</html>
