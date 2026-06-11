@@ -79,7 +79,7 @@ def extract_from_title(title: str) -> dict:
     id_match = re.search(r"#(\d+)", title)
 
     neighborhood_match = re.search(
-        r"İstanbul\s+(?:Kadıköy|Üsküdar|Beşiktaş)\s+(.+?)\s+Mahallesi",
+        r"İstanbul\s+.+?\s+(.+?)\s+Mahallesi",
         title,
     )
 
