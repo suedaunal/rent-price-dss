@@ -1,11 +1,26 @@
-<!DOCTYPE html>
+!DOCTYPE html>
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
+
     <title>Analiz Sonucu</title>
+
 
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
+<body>
+
+    <div class="page-container">
+
+        <div class="card result-card">
+
+            <h1>Analiz Sonucu</h1>
+
+            <div class="result-summary">
+                <h2>{{ result.status }}</h2>
+
+                <p>
+                    Adil Kira Puanı
 <body>
 
     <div class="page-container">
