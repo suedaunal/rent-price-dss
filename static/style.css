@@ -169,22 +169,21 @@ body {
     font-weight: 850;
 }
 
-.hero-process {
-    position: relative;
-    min-height: 470px;
-    padding: 42px;
+ .hero-process {
+    width: 100%;
+    min-height: auto;
+    padding: 18px;
     display: grid;
-    grid-template-columns: 80px 1fr;
-    gap: 26px;
-    border-radius: 36px;
-    background: rgba(255,255,255,0.13);
-    border: 1px solid rgba(255,255,255,0.28);
-    backdrop-filter: blur(18px);
+    grid-template-columns: 42px minmax(0, 1fr);
+    gap: 12px;
+    align-items: stretch;
+    border-radius: 24px;
 }
 
 .process-line {
-    position: relative;
     display: flex;
+    grid-column: 1;
+    grid-row: 1;
     flex-direction: column;
     justify-content: space-around;
     align-items: center;
@@ -200,25 +199,18 @@ body {
 }
 
 .process-line span {
-    position: relative;
-    z-index: 1;
-    width: 58px;
-    height: 58px;
-    display: grid;
-    place-items: center;
-    border-radius: 50%;
-    color: white;
-    border: 3px solid rgba(255,255,255,0.9);
-    background: rgba(255,255,255,0.14);
-    font-size: 28px;
-    font-weight: 950;
+    width: 34px;
+    height: 34px;
+    font-size: 17px;
 }
 
 .process-cards {
+    grid-column: 2;
+    width: 100%;
+    min-width: 0;
     display: grid;
-    gap: 22px;
+    gap: 12px;
 }
-
 .process-card {
     min-height: 95px;
     padding: 20px;
@@ -259,9 +251,11 @@ body {
 
 .process-note {
     grid-column: 2;
-    color: #dbeafe;
-    font-size: 17px !important;
-    font-weight: 800 !important;
+    width: 100%;
+    margin-top: 4px;
+    text-align: left;
+    font-size: 13px !important;
+    line-height: 1.4;
 }
 
 .stats-row {

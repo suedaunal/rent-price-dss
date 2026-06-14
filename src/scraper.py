@@ -152,6 +152,7 @@ def parse_listing_detail(url: str, district: str) -> dict:
 
     title = soup.title.text.strip() if soup.title else ""
     text = soup.get_text(" ", strip=True)
+       
 
     title_data = extract_from_title(title)
     detail_data = extract_from_detail_text(text)
