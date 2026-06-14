@@ -2,6 +2,7 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Analiz Sonucu</title>
 
@@ -38,8 +39,11 @@
                 </p>
 
                 <div class="score-bar">
-                    <div class="score-fill" style="width: {{ result.fair_rent_score }}%;"></div>
-                </div>
+    <div 
+        class="score-fill" 
+        data-score="{{ result.get('fair_rent_score', 0) }}">
+    </div>
+</div>
             </div>
 
             <div class="info-grid">
@@ -152,6 +156,13 @@
         </div>
 
     </div>
+<script>
+    const scoreFill = document.querySelector(".score-fill");
 
+    if (scoreFill) {
+        const score = scoreFill.dataset.score || 0;
+        scoreFill.style.width = score + "%";
+    }
+</script>
 </body>
 </html>
