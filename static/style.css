@@ -900,9 +900,7 @@ button {
         grid-template-columns: 1fr;
     }
 
-    .process-line {
-        display: none;
-    }
+    
 }
 .user-email{
     font-weight:700;
