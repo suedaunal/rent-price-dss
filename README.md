@@ -97,7 +97,6 @@ Examples of generated analytical features include:
 | price_per_m2 | Rental price divided by square meters |
 | district_avg_price | Average district rental price |
 | relative_price_index | Listing price compared to district average |
-| transport_score | Transportation accessibility score |
 | building_age_group | Categorized building age |
 | fair_rent_score | Final weighted fairness score |
 
